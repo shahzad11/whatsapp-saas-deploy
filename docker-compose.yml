@@ -1,0 +1,142 @@
+# WhatsApp SaaS — production stack.
+#
+# Pulls prebuilt images from GHCR, so standing this up on a brand new Docker
+# host is: copy this file + a .env, then `docker compose up -d`.
+# To build from source instead, add: -f docker-compose.yml -f docker-compose.build.yml
+#
+# Only the frontend is routable, and only via a Traefik that already runs on
+# the host. Neither the backend nor MySQL publishes a port, so neither is
+# reachable from outside the Docker network.
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?required}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-whatsapp_saas}
+      MYSQL_USER: ${MYSQL_USER:?required}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?required}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks: [app]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/shahzad11/whatsapp-saas-backend:latest}
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      BIND_HOST: 0.0.0.0
+      DATA_DIR: /data
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # The V8 heap is capped below the container limit so native/RSS overhead
+      # trips neither the OOM killer nor the heap ceiling first.
+      NODE_OPTIONS: --max-old-space-size=${BACKEND_HEAP_MB:-1024}
+      # Without this the process refuses to start — see middleware/auth.js.
+      BACKEND_API_KEY: ${BACKEND_API_KEY:?required}
+      # Where to hand an incoming message for a possible chatbot reply. The
+      # backend decides nothing about the chatbot; PHP owns that entirely.
+      FRONTEND_URL: http://frontend
+      # Resource bounds — see .env.example for what each knob means.
+      MEDIA_EAGER_MAX_BYTES: ${MEDIA_EAGER_MAX_BYTES:-5242880}
+      MEDIA_EAGER_GROUPS: ${MEDIA_EAGER_GROUPS:-false}
+      MEDIA_RETENTION_DAYS: ${MEDIA_RETENTION_DAYS:-30}
+      MEDIA_TENANT_CAP_MB: ${MEDIA_TENANT_CAP_MB:-2048}
+      MAX_MESSAGES_IN_MEMORY: ${MAX_MESSAGES_IN_MEMORY:-200}
+      MESSAGE_IDLE_EVICT_MS: ${MESSAGE_IDLE_EVICT_MS:-1800000}
+    # A hard container ceiling, not just a heap hint: Baileys session state is
+    # the growth risk, and a container that is killed and restarted recovers —
+    # one that swaps the host to death does not.
+    mem_limit: ${BACKEND_MEM_LIMIT:-1536m}
+    volumes:
+      - wa-data:/data
+    networks: [app]
+    # No `ports:` — deliberately. The only route in is via the frontend.
+    stop_grace_period: 40s
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-ghcr.io/shahzad11/whatsapp-saas-frontend:latest}
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    environment:
+      APP_NAME: ${APP_NAME:-WhatsApp SaaS}
+      APP_HOST: ${APP_HOST:?required}
+      APP_URL: https://${APP_HOST}
+      BACKEND_URL: http://backend:3001
+      BACKEND_API_KEY: ${BACKEND_API_KEY:?required}
+      # Encrypts secrets at rest (SMTP password, LLM API keys). Optional, and
+      # deliberately so: an empty value makes crypto.php fall back to
+      # BACKEND_API_KEY, which is what every deployment predating this line
+      # already encrypted with. Setting it on such a deployment would make
+      # those stored secrets undecryptable, so it is only generated for fresh
+      # installs — see deploy/install.sh.
+      APP_SECRET_KEY: ${APP_SECRET_KEY:-}
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-whatsapp_saas}
+      MYSQL_USER: ${MYSQL_USER:?required}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?required}
+      SESSION_SECURE: ${SESSION_SECURE:-true}
+      DEV_MODE: ${DEV_MODE:-false}
+      DEFAULT_PLAN_CODE: ${DEFAULT_PLAN_CODE:-free}
+      MAIL_FROM: ${MAIL_FROM:-noreply@${APP_HOST}}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrator}
+      # Used once at first boot to open a free FenLLM trial account for the
+      # admin (see docker/bootstrap.php). Optional — without it the stack runs
+      # fine, the trial account just is not created automatically.
+      FENLLM_PARTNER_SECRET: ${FENLLM_PARTNER_SECRET:-}
+    volumes:
+      - php-sessions:/var/lib/php/sessions
+    networks: [app]
+    # List syntax, not mapping syntax, and deliberately so: Compose interpolates
+    # only YAML *values*, never keys. As a mapping, the router name would have
+    # been the literal string "${STACK_NAME:-whatsapp-saas}" and Traefik would
+    # never have matched the host. See docs/reference/compose-file/interpolation.
+    labels:
+      - "traefik.enable=true"
+      # Traefik runs with network_mode: host, so it must be told which network
+      # to dial the container on.
+      - "traefik.docker.network=${STACK_NAME:-whatsapp-saas}-app"
+      # APP_HOST comes from .env, so the same file deploys to any domain and
+      # Let's Encrypt issues for whatever it is set to.
+      - "traefik.http.routers.${STACK_NAME:-whatsapp-saas}.rule=Host(`${APP_HOST}`)"
+      - "traefik.http.routers.${STACK_NAME:-whatsapp-saas}.entrypoints=websecure"
+      - "traefik.http.routers.${STACK_NAME:-whatsapp-saas}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${STACK_NAME:-whatsapp-saas}.loadbalancer.server.port=80"
+      - "traefik.http.routers.${STACK_NAME:-whatsapp-saas}.middlewares=${STACK_NAME:-whatsapp-saas}-hsts"
+      - "traefik.http.middlewares.${STACK_NAME:-whatsapp-saas}-hsts.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.${STACK_NAME:-whatsapp-saas}-hsts.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.${STACK_NAME:-whatsapp-saas}-hsts.headers.forceSTSHeader=true"
+
+# Every resource is namespaced by STACK_NAME so two deployments (two domains)
+# can share a host without colliding. Unset falls back to the original
+# `whatsapp-saas` names — renaming a volume would orphan the database.
+networks:
+  app:
+    name: ${STACK_NAME:-whatsapp-saas}-app
+
+volumes:
+  mysql-data:
+    name: ${STACK_NAME:-whatsapp-saas}-mysql-data
+  wa-data:
+    name: ${STACK_NAME:-whatsapp-saas}-wa-data
+  php-sessions:
+    name: ${STACK_NAME:-whatsapp-saas}-php-sessions

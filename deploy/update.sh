@@ -37,6 +37,13 @@ WA_REPO_REF="${WA_REPO_REF:-main}"
 WA_REPO_TARBALL="${WA_REPO_TARBALL:-}"
 WA_UPDATE_FEED="${WA_UPDATE_FEED:-https://raw.githubusercontent.com/${WA_REPO}/${WA_REPO_REF}/latest.json}"
 
+# Everything below runs inside main(), called on the very last line. With
+# `curl … | bash`, bash reads the script from the pipe as it executes, so any
+# child that reads stdin — `docker compose exec` does — would swallow the rest
+# of the script and bash would exit silently, mid-update. Parsing the whole
+# body first and only then running it closes that hole; the explicit
+# </dev/null on the exec calls is the belt to that brace.
+main() {
 # --- Arguments --------------------------------------------------------------
 
 DEPLOY_ARG=""
@@ -137,7 +144,7 @@ COMPOSE=(docker compose -f docker-compose.yml)
 # "we don't know", which the report should say rather than print a blank.
 running_version() {
   local v
-  v="$(docker compose -f docker-compose.yml exec -T frontend sh -c 'printf %s "$APP_VERSION"' 2>/dev/null || true)"
+  v="$(docker compose -f docker-compose.yml exec -T frontend sh -c 'printf %s "$APP_VERSION"' 2>/dev/null </dev/null || true)"
   if [[ -z "$v" || "$v" == "dev" ]]; then
     printf 'unknown'
   else
@@ -171,8 +178,8 @@ feed_version() {
 wait_healthy() {
   for _ in $(seq 1 90); do
     if "${COMPOSE[@]}" ps --format json 2>/dev/null | grep -q '"Health":"healthy".*frontend\|frontend.*healthy'; then
-      if "${COMPOSE[@]}" exec -T frontend curl -fsS http://127.0.0.1/health.php >/dev/null 2>&1 \
-         && "${COMPOSE[@]}" exec -T backend curl -fsS http://127.0.0.1:3001/health >/dev/null 2>&1; then
+      if "${COMPOSE[@]}" exec -T frontend curl -fsS http://127.0.0.1/health.php >/dev/null 2>&1 </dev/null \
+         && "${COMPOSE[@]}" exec -T backend curl -fsS http://127.0.0.1:3001/health >/dev/null 2>&1 </dev/null; then
         return 0
       fi
     fi
@@ -246,7 +253,7 @@ if [[ -n "$ROLLBACK_TS" ]]; then
       echo "    The code already rolled back; this step is only for a database that"
       echo "    the rolled-back code genuinely cannot read."
       echo
-      read -r -p "Type the timestamp $ROLLBACK_TS to confirm: " CONFIRM
+      read -r -p "Type the timestamp $ROLLBACK_TS to confirm: " CONFIRM </dev/tty
       if [[ "$CONFIRM" != "$ROLLBACK_TS" ]]; then
         echo "Aborted — database left as it is."
         exit 1
@@ -256,7 +263,7 @@ if [[ -n "$ROLLBACK_TS" ]]; then
     # on the host command line (same trick as the backup's mysqldump).
     # shellcheck disable=SC2016
     zcat "$BACKUP_DIR/db.sql.gz" | "${COMPOSE[@]}" exec -T mysql \
-      sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"'
+      sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot "$MYSQL_DATABASE"'
     echo "==> Database restored from $BACKUP_DIR/db.sql.gz"
   else
     cat <<EOF
@@ -365,8 +372,8 @@ chmod 600 "$BACKUP_DIR/.env"
 # the running stack keeps working while the dump is taken.
 # shellcheck disable=SC2016
 "${COMPOSE[@]}" exec -T mysql \
-  sh -c 'exec mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" --single-transaction --quick --routines --triggers "$MYSQL_DATABASE"' \
-  | gzip > "$BACKUP_DIR/db.sql.gz"
+  sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -uroot --single-transaction --quick --routines --triggers "$MYSQL_DATABASE"' \
+  </dev/null | gzip > "$BACKUP_DIR/db.sql.gz"
 
 # A dump that produced an empty file or no CREATE TABLE is not a backup — it is
 # a false sense of security. Verify it here, before any image is pulled.
@@ -397,7 +404,7 @@ for svc in frontend backend; do
   ')"
   img_id="$("${COMPOSE[@]}" images -q "$svc" 2>/dev/null | head -n1)"
   # shellcheck disable=SC2016
-  ver="$("${COMPOSE[@]}" exec -T "$svc" sh -c 'printf %s "${APP_VERSION:-}"' 2>/dev/null || true)"
+  ver="$("${COMPOSE[@]}" exec -T "$svc" sh -c 'printf %s "${APP_VERSION:-}"' 2>/dev/null </dev/null || true)"
   echo "$svc ${ref:-unknown} ${img_id:-none} ${ver:-unknown}" >> "$BACKUP_DIR/images.txt"
   if [[ -n "$img_id" ]]; then
     docker tag "$img_id" "whatsapp-saas-${svc}:rollback-${TS}" || true
@@ -455,3 +462,6 @@ cat <<EOF
     The backend restart makes linked WhatsApp numbers reconnect on their own
     within ~30 seconds — no QR scan needed.
 EOF
+}
+
+main "$@"

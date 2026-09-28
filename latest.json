@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.0",
-  "published_at": "2026-09-28T08:53:40Z",
-  "notes": "Add a stable release channel, backup-first update script and admin update indicator\n\nStudents install once and need to update later without losing customer data.\nImages now carry APP_VERSION; v* tags publish `stable` + `vX.Y.Z` images, a\nGitHub Release and a latest.json feed in the public deploy repo.\ndeploy/update.sh backs up the database, wa-data and .env, pins rollback tags,\nthen pulls and health-checks, with --check and --rollback. The admin console\nshows the running version and a banner when a newer release exists.\n\nGenerated with [Devin](https://devin.ai)\n\nCo-Authored-By: Devin <15824324"
+  "version": "v1.0.1",
+  "published_at": "2026-09-28T09:17:33Z",
+  "notes": "Booking notifications for business owners\n\n- When the WhatsApp assistant books an appointment, the business owner is now told on their own WhatsApp number and by email (if SMTP is set up).\n- New setting under Settings > Appointments: choose WhatsApp and email, one of them, or off.\n- Failed notices appear on the Appointments page with a \"Try again\" button."
 }

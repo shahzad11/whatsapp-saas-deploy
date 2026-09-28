@@ -377,7 +377,10 @@ chmod 600 "$BACKUP_DIR/.env"
 
 # A dump that produced an empty file or no CREATE TABLE is not a backup — it is
 # a false sense of security. Verify it here, before any image is pulled.
-if [[ ! -s "$BACKUP_DIR/db.sql.gz" ]] || ! zcat "$BACKUP_DIR/db.sql.gz" | grep -q 'CREATE TABLE'; then
+# grep -c, not -q: -q exits at the first match, zcat then dies of SIGPIPE and
+# under pipefail a perfectly good dump reads as a failure.
+TABLE_COUNT="$(zcat "$BACKUP_DIR/db.sql.gz" 2>/dev/null | grep -c 'CREATE TABLE' || true)"
+if [[ ! -s "$BACKUP_DIR/db.sql.gz" || "${TABLE_COUNT:-0}" -eq 0 ]]; then
   echo "FATAL: database backup failed or produced no schema — nothing has been changed." >&2
   exit 1
 fi
@@ -411,7 +414,7 @@ for svc in frontend backend; do
   fi
 done
 
-echo "==> Backup complete"
+echo "==> Backup complete (${TABLE_COUNT} tables in the dump)"
 du -sh "$BACKUP_DIR"/* | sed 's/^/    /'
 
 # Prune old backups beyond the newest KEEP_BACKUPS — disk on a student VPS is

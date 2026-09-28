@@ -215,6 +215,11 @@ APP_NAME="WhatsApp SaaS"
 STACK_NAME="${STACK_NAME}"
 COMPOSE_PROJECT_NAME="${STACK_NAME}"
 
+# Which image channel to track. "stable" follows tagged releases (the default);
+# "latest" tracks every push to main — development builds that may be
+# unfinished. Change the value and run deploy/update.sh to switch channels.
+IMAGE_TAG="stable"
+
 # Internal shared secret between the frontend and backend containers — not an
 # external API key. The backend refuses to boot without it.
 BACKEND_API_KEY="$(openssl rand -hex 32)"
@@ -376,4 +381,5 @@ Also worth knowing:
   - Every secret is in .env (mode 0600) next to docker-compose.yml. Do not rotate
     APP_SECRET_KEY or BACKEND_API_KEY on a live instance: everything already
     stored encrypted with them becomes unreadable.
+  - To update later: run deploy/update.sh from this directory (backs up first).
 NEXT

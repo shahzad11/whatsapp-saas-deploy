@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.5",
-  "published_at": "2026-09-30T09:26:53Z",
-  "notes": "Neutral sign-in branding and a fuller public page\n\nYour sign-in pages no longer use the WhatsApp logo or WhatsApp green. The mark\nis now a monogram from your business name, and an uploaded logo still replaces\nit. Brand impersonation is what gets deployments suspended, so this matters.\n\nThe public page gains \"How it works\" and a FAQ that answers why there is no\nsign-up button -- the question that makes a login-only site look suspicious.\n\nAdmin > Website now takes screenshots and can publish your plans."
+  "version": "v1.0.6",
+  "published_at": "2026-09-30T10:02:47Z",
+  "notes": "Handover fixes: the assistant now always tells the customer when a person takes over, an offer no longer opens a handover before the customer accepts, and the Chats page shows which conversations are with a person with a per-chat Bot on/off switch."
 }

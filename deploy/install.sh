@@ -159,6 +159,44 @@ if [[ -n "$EXISTING_HOST" && "$EXISTING_HOST" != "$APP_HOST" ]]; then
   exit 1
 fi
 
+# A neutral app name derived from the host, so a fresh deployment never ships
+# titled "WhatsApp SaaS" — a bare login page under that name is
+# indistinguishable from a credential phish and is what has gotten these
+# deployments suspended by their hosts. deploy/update.sh carries an identical
+# copy (it is fetched standalone and cannot share a file with this script);
+# the two, and defaultAppNameFromHost() in frontend-php/config/env.php, must
+# stay in step.
+#
+# The first remaining label is taken — correct for example.com and
+# example.co.uk alike, which is why there is no public-suffix list here. A
+# machine-generated first label (Hostinger's srv123456.hstgr.cloud) makes a
+# terrible name, so the next label is used instead, but only while it is not
+# itself the last label — a bare TLD is nobody's name.
+derive_app_name() {
+  local host="$1" label rest part name=""
+  host="$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+  # One leading `app` label is our own subdomain convention, not the name —
+  # only one is stripped, so app.app.com still resolves to "App".
+  host="${host#app.}"
+  label="${host%%.*}"
+  if [[ "$label" =~ ^(srv|vps|vmi|node|host|server)?[0-9]{3,}$ ]]; then
+    rest="${host#*.}"
+    if [[ "$rest" != "$host" && "$rest" == *.* ]]; then
+      label="${rest%%.*}"
+    fi
+  fi
+  local -a parts
+  IFS='-' read -ra parts <<< "$label"
+  for part in "${parts[@]}"; do
+    # ${part^} would be tidier but needs bash 4; a minimal host may have 3.2.
+    [[ -n "$part" ]] && name+="${name:+ }$(printf '%s' "${part:0:1}" | tr '[:lower:]' '[:upper:]')${part:1}"
+  done
+  # "Messaging Hub", never anything containing "WhatsApp".
+  [[ -z "$name" ]] && name="Messaging Hub"
+  # The cap matches the brand_name limit in the admin console.
+  printf '%s' "${name:0:100}"
+}
+
 # Compose project names and Docker resource names allow neither dots nor
 # uppercase, so derive a slug. Existing deployments have no STACK_NAME in .env
 # and fall back to the historical `whatsapp-saas` names, which must not change
@@ -195,6 +233,10 @@ fi
 
 # --- Environment ------------------------------------------------------------
 
+# APP_DOMAIN already has the subdomain stripped, so this is the name of the
+# apex the deployer owns.
+DERIVED_APP_NAME="$(derive_app_name "$APP_DOMAIN")"
+
 if [[ -f .env ]]; then
   echo "==> .env already exists — reusing it (delete it to start fresh)"
 else
@@ -202,13 +244,15 @@ else
   ADMIN_PASSWORD="$(openssl rand -base64 18 | tr -d '/+=' | head -c 20)"
 
   # Every value is quoted. Compose tolerates bare spaces, but operators do
-  # `set -a; . ./.env` all the time, and an unquoted `APP_NAME=WhatsApp SaaS`
-  # makes that blow up with "SaaS: command not found".
+  # `set -a; . ./.env` all the time, and an unquoted `APP_NAME=Chat Desk`
+  # makes that blow up with "Desk: command not found".
   umask 077
   cat > .env <<EOF
 APP_HOST="${APP_HOST}"
 APP_DOMAIN="${APP_DOMAIN}"
-APP_NAME="WhatsApp SaaS"
+# Derived from the domain (see derive_app_name above) rather than named after
+# WhatsApp. Change it afterwards in Admin > Branding.
+APP_NAME="${DERIVED_APP_NAME}"
 
 # Names every Docker resource and the Traefik router, so two deployments on one
 # host cannot collide. Changing it after the first boot orphans the volumes.
@@ -263,6 +307,10 @@ LOG_LEVEL="info"
 # outgoing mail goes through the SMTP server configured in Admin → Email.
 MAIL_FROM="noreply@${APP_DOMAIN}"
 
+# The publicly shown contact address (footer, legal pages) — distinct from
+# MAIL_FROM above, which is a no-reply sender. Change it in Admin > Branding.
+CONTACT_EMAIL="${ADMIN_EMAIL:-admin@${APP_DOMAIN}}"
+
 # Opens a free FenLLM trial account (AI provider) for the admin on first boot,
 # so the chatbot works with no other setup. It can only ever create trial
 # accounts — it cannot spend money — and the FenLLM owner can rotate it. An
@@ -274,6 +322,7 @@ EOF
 
   echo
   echo "    App URL:        https://${APP_HOST}/"
+  echo "    App name:       ${DERIVED_APP_NAME}  (change it in Admin > Branding)"
   echo "    Admin login:    ${ADMIN_EMAIL:-admin@${APP_DOMAIN}}"
   echo "    Admin password: ${ADMIN_PASSWORD}"
   echo "    (also stored in .env — save it now, it is not shown again)"
@@ -360,19 +409,23 @@ cat <<'NEXT'
 The stack is up, but it is not usable yet. In the app, as the admin:
 
   1. Log in at the URL above with the credentials shown earlier.
-  2. Admin > Email / SMTP    — outgoing email. Until this is set, activation and
+  2. Admin > Branding        — set your real business name, contact email and
+                               logo. A deployment left on the auto-generated
+                               name with no logo is more likely to be flagged by
+                               the host as a phishing site.
+  3. Admin > Email / SMTP    — outgoing email. Until this is set, activation and
                                password-reset emails cannot be delivered at all.
-  3. Admin > AI / LLM        — a free FenLLM trial account has been created for
+  4. Admin > AI / LLM        — a free FenLLM trial account has been created for
                                you automatically and is selected by default; add
                                OpenAI/Anthropic/Google keys only if you want them.
-  4. Admin > Plans           — switch the AI chatbot feature on for a plan. The
+  5. Admin > Plans           — switch the AI chatbot feature on for a plan. The
                                FenLLM model is already granted to every plan, so
                                there is no model access to set up unless you add
                                another provider's models.
-  5. Admin > Settings        — currency and timezone.
-  6. Admin > Customers       — add your first customer (invite by email or give a temporary password).
-  7. Link Account            — pair a WhatsApp number by scanning a QR code.
-  8. Chatbot                 — knowledge base, model, then switch the bot on.
+  6. Admin > Settings        — currency and timezone.
+  7. Admin > Customers       — add your first customer (invite by email or give a temporary password).
+  8. Link Account            — pair a WhatsApp number by scanning a QR code.
+  9. Chatbot                 — knowledge base, model, then switch the bot on.
 
 Also worth knowing:
   - DNS for the host above must already point at this server, and a Traefik with

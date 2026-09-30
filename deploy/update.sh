@@ -37,6 +37,119 @@ WA_REPO_REF="${WA_REPO_REF:-main}"
 WA_REPO_TARBALL="${WA_REPO_TARBALL:-}"
 WA_UPDATE_FEED="${WA_UPDATE_FEED:-https://raw.githubusercontent.com/${WA_REPO}/${WA_REPO_REF}/latest.json}"
 
+# A neutral app name derived from the host — an identical copy lives in
+# deploy/install.sh (this script is fetched standalone and cannot share a file
+# with it); the two, and defaultAppNameFromHost() in
+# frontend-php/config/env.php, must stay in step. The first remaining label is
+# taken — correct for example.com and example.co.uk alike, which is why there
+# is no public-suffix list here. A machine-generated first label (Hostinger's
+# srv123456.hstgr.cloud) makes a terrible name, so the next label is used
+# instead, but only while it is not itself the last label — a bare TLD is
+# nobody's name.
+derive_app_name() {
+  local host="$1" label rest part name=""
+  host="$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+  # One leading `app` label is our own subdomain convention, not the name —
+  # only one is stripped, so app.app.com still resolves to "App".
+  host="${host#app.}"
+  label="${host%%.*}"
+  if [[ "$label" =~ ^(srv|vps|vmi|node|host|server)?[0-9]{3,}$ ]]; then
+    rest="${host#*.}"
+    if [[ "$rest" != "$host" && "$rest" == *.* ]]; then
+      label="${rest%%.*}"
+    fi
+  fi
+  local -a parts
+  IFS='-' read -ra parts <<< "$label"
+  for part in "${parts[@]}"; do
+    # ${part^} would be tidier but needs bash 4; a minimal host may have 3.2.
+    [[ -n "$part" ]] && name+="${name:+ }$(printf '%s' "${part:0:1}" | tr '[:lower:]' '[:upper:]')${part:1}"
+  done
+  # "Messaging Hub", never anything containing "WhatsApp".
+  [[ -z "$name" ]] && name="Messaging Hub"
+  # The cap matches the brand_name limit in the admin console.
+  printf '%s' "${name:0:100}"
+}
+
+# Rewrites $1 (a .env) in place: an APP_NAME that is missing, empty, or one of
+# the two old WhatsApp defaults is replaced with the domain-derived name, and
+# CONTACT_EMAIL is appended when absent.
+#
+# Deploys installed before this version carried an explicit
+# APP_NAME="WhatsApp SaaS" (or the older "WhatsApp Linked"), which would keep
+# overriding the new domain-derived default forever — and that name on a bare
+# login page is what gets these deployments flagged as phishing. A brand_name
+# stored via Admin > Branding lives in the database and already wins over
+# APP_NAME, so this cannot clobber an instance the owner has actually branded.
+#
+# Reads the file with the same sed idiom STACK_NAME uses below — never
+# `source`, which would execute whatever ended up in it. A function at top
+# level rather than inline in main so the test suite can extract and exercise
+# the real copy, exactly like derive_app_name.
+migrate_env_identity() {
+  local envfile="$1"
+  local env_name env_host env_domain env_admin derived
+  env_name="$(sed -n 's/^APP_NAME=["'"'"']\{0,1\}\([^"'"'"']*\).*/\1/p' "$envfile" | head -n1)"
+  env_host="$(sed -n 's/^APP_HOST=["'"'"']\{0,1\}\([^"'"'"']*\).*/\1/p' "$envfile" | head -n1)"
+  env_domain="$(sed -n 's/^APP_DOMAIN=["'"'"']\{0,1\}\([^"'"'"']*\).*/\1/p' "$envfile" | head -n1)"
+  env_domain="${env_domain:-${env_host#app.}}"
+  env_admin="$(sed -n 's/^ADMIN_EMAIL=["'"'"']\{0,1\}\([^"'"'"']*\).*/\1/p' "$envfile" | head -n1)"
+
+  local needs_name=false needs_contact=false
+  if [[ -z "$env_name" || "$env_name" == "WhatsApp SaaS" || "$env_name" == "WhatsApp Linked" ]]; then
+    needs_name=true
+  fi
+  grep -q '^CONTACT_EMAIL=' "$envfile" || needs_contact=true
+  [[ "$needs_name" == "false" && "$needs_contact" == "false" ]] && return 0
+
+  derived="$(derive_app_name "$env_host")"
+
+  # Temp file + mv, never an in-place write: a full disk mid-rewrite must not
+  # leave a truncated .env — the backup copy is already safe, but a
+  # half-written live file would break the pull that follows.
+  local tmp_env
+  tmp_env="$(mktemp "${TMPDIR:-/tmp}/wa-env.XXXXXX")"
+  {
+    if [[ "$needs_name" == "true" ]]; then
+      if grep -q '^APP_NAME=' "$envfile"; then
+        # A read-loop, not sed: `derived` would land in sed's replacement text,
+        # where &, \ and the delimiter are metacharacters — and APP_HOST comes
+        # from a hand-editable file, so "a valid domain can't produce those"
+        # is not a guarantee this script gets to make.
+        local line
+        while IFS= read -r line || [[ -n "$line" ]]; do
+          case "$line" in
+            APP_NAME=*) printf 'APP_NAME="%s"\n' "$derived" ;;
+            *)          printf '%s\n' "$line" ;;
+          esac
+        done < "$envfile"
+      else
+        cat "$envfile"
+        printf 'APP_NAME="%s"\n' "$derived"
+      fi
+    else
+      cat "$envfile"
+    fi
+  } > "$tmp_env"
+  if [[ "$needs_contact" == "true" ]]; then
+    printf '\n# Publicly shown contact address (page footer). Change it in Admin > Branding.\nCONTACT_EMAIL="%s"\n' \
+      "${env_admin:-admin@${env_domain}}" >> "$tmp_env"
+  fi
+  if [[ ! -s "$tmp_env" ]]; then
+    echo "WARNING: .env rewrite produced an empty file — left unchanged." >&2
+    rm -f "$tmp_env"
+    return 0
+  fi
+  chmod 600 "$tmp_env"
+  mv "$tmp_env" "$envfile"
+  if [[ "$needs_name" == "true" ]]; then
+    echo "==> App name: \"${env_name:-<unset>}\" -> \"${derived}\""
+    echo "    (auto-derived from ${env_host}; set your real name in Admin > Branding — it wins over .env)"
+  fi
+  [[ "$needs_contact" == "true" ]] && \
+    echo "==> CONTACT_EMAIL set to ${env_admin:-admin@${env_domain}} (change it in Admin > Branding)"
+}
+
 # Everything below runs inside main(), called on the very last line. With
 # `curl … | bash`, bash reads the script from the pipe as it executes, so any
 # child that reads stdin — `docker compose exec` does — would swallow the rest
@@ -365,6 +478,10 @@ echo "==> Backing up into $BACKUP_DIR"
 
 cp -p .env "$BACKUP_DIR/.env"
 chmod 600 "$BACKUP_DIR/.env"
+
+# Migrate a pre-derived-name .env in place (see the function's own comment
+# above main). Runs after the .env backup so the original is always recoverable.
+migrate_env_identity .env
 
 # mysqldump inside the container: the root password is read from the container's
 # own environment, so it never appears on the host command line or in `ps`.

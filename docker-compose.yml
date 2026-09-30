@@ -79,7 +79,10 @@ services:
       backend:
         condition: service_started
     environment:
-      APP_NAME: ${APP_NAME:-WhatsApp SaaS}
+      # No default on purpose: empty falls through to the domain-derived name
+      # in config/app.php. A "WhatsApp" default here reads as brand
+      # impersonation to hosting providers.
+      APP_NAME: ${APP_NAME:-}
       APP_HOST: ${APP_HOST:?required}
       APP_URL: https://${APP_HOST}
       BACKEND_URL: http://backend:3001
@@ -99,6 +102,9 @@ services:
       DEV_MODE: ${DEV_MODE:-false}
       DEFAULT_PLAN_CODE: ${DEFAULT_PLAN_CODE:-free}
       MAIL_FROM: ${MAIL_FROM:-noreply@${APP_HOST}}
+      # Public contact address; empty falls back to ADMIN_EMAIL then MAIL_FROM
+      # inside config/app.php.
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       ADMIN_NAME: ${ADMIN_NAME:-Administrator}

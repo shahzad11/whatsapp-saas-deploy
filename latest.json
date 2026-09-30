@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.3",
-  "published_at": "2026-09-30T08:38:47Z",
-  "notes": "Public website, privacy and terms pages\n\nYour app now has a real public website at its address, instead of going straight\nto the sign-in form. A domain whose only page is a login box is what hosting\nproviders flag as a phishing site.\n\nIt adds a landing page, privacy, terms and contact pages, and states clearly\nthat accounts are created by you and there is no public sign-up.\n\nEdit all of it in Admin > Website. Please replace the privacy and terms text --\nit is a general template and has not been reviewed by a lawyer."
+  "version": "v1.0.4",
+  "published_at": "2026-09-30T08:45:32Z",
+  "notes": "Landing page copy fix\n\nFixes the automatic landing-page headline, which could come out as just your\nbusiness name with the descriptive part missing. The built-in text is now kept\nwhenever the generated version adds nothing to it.\n\nEdit your landing page, privacy and terms text in Admin > Website."
 }

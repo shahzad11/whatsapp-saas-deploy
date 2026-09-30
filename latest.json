@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.6",
-  "published_at": "2026-09-30T10:02:47Z",
-  "notes": "Handover fixes: the assistant now always tells the customer when a person takes over, an offer no longer opens a handover before the customer accepts, and the Chats page shows which conversations are with a person with a per-chat Bot on/off switch."
+  "version": "v1.0.7",
+  "published_at": "2026-09-30T10:40:45Z",
+  "notes": "Voice notes work again: transcription no longer waits on the model's reasoning, and a transcript that arrives partially is still used instead of being dropped."
 }

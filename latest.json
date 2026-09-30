@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.2",
-  "published_at": "2026-09-30T07:59:12Z",
-  "notes": "Anti-phishing rebrand of the public pages\n\nHosting providers have been suspending deployments that still ship under the\ndefault name \"WhatsApp SaaS\": a login page under that name, with the WhatsApp\nlogo, looks like a phishing site to their scanners.\n\nThis update renames your app automatically, based on your own domain, and adds\nyour business name and contact email to the bottom of the sign-in page.\n\nPlease open Admin > Branding and set your real business name, contact email and\nlogo. A deployment left unbranded is the one most likely to be suspended."
+  "version": "v1.0.3",
+  "published_at": "2026-09-30T08:38:47Z",
+  "notes": "Public website, privacy and terms pages\n\nYour app now has a real public website at its address, instead of going straight\nto the sign-in form. A domain whose only page is a login box is what hosting\nproviders flag as a phishing site.\n\nIt adds a landing page, privacy, terms and contact pages, and states clearly\nthat accounts are created by you and there is no public sign-up.\n\nEdit all of it in Admin > Website. Please replace the privacy and terms text --\nit is a general template and has not been reviewed by a lawyer."
 }

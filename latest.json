@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.4",
-  "published_at": "2026-09-30T08:45:32Z",
-  "notes": "Landing page copy fix\n\nFixes the automatic landing-page headline, which could come out as just your\nbusiness name with the descriptive part missing. The built-in text is now kept\nwhenever the generated version adds nothing to it.\n\nEdit your landing page, privacy and terms text in Admin > Website."
+  "version": "v1.0.5",
+  "published_at": "2026-09-30T09:26:53Z",
+  "notes": "Neutral sign-in branding and a fuller public page\n\nYour sign-in pages no longer use the WhatsApp logo or WhatsApp green. The mark\nis now a monogram from your business name, and an uploaded logo still replaces\nit. Brand impersonation is what gets deployments suspended, so this matters.\n\nThe public page gains \"How it works\" and a FAQ that answers why there is no\nsign-up button -- the question that makes a login-only site look suspicious.\n\nAdmin > Website now takes screenshots and can publish your plans."
 }

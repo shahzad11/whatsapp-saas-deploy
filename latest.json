@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.8",
-  "published_at": "2026-09-30T10:45:08Z",
-  "notes": "v1.0.8: redesigned public website\n\nYour public landing page has a new design: a clear \"Request access\" call to action, six feature cards, how it works, a short summary of how messages are handled, questions people ask, and a \"Who runs this workspace?\" block with your business name and contact email.\n\nNew in Admin -> Branding: optional business address, phone and registration number. They appear on the public pages only when you fill them in, and a verifiable operator identity is what abuse reviewers look for.\n\nAdmin -> Website: feature cards are now \"Title | Description\" per line (blank restor"
+  "version": "v1.0.9",
+  "published_at": "2026-09-30T12:20:27Z",
+  "notes": "Ready-to-sell plans out of the box, and AI credits\n\n- New plan ladder: Free, Starter Rs 3,999, Business Rs 7,999, Pro Rs 14,999 - the AI chatbot is on for every plan. Existing plans are not changed; a Business plan is added.\n- AI usage is now metered in credits: 1 per FenLLM Basic reply, 15 per Pro, 35 per Max, +5 for a voice note. The AI credits / month limit on a plan bounds what a customer can cost you whichever model they pick.\n- New installs come up with currency, timezone and default plan set - only outgoing email is left to configure.\n- New Plan Building Guide explains how to price plan"
 }

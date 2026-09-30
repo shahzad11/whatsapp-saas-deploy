@@ -398,34 +398,40 @@ echo "==> Done. https://${APP_HOST}/"
 echo "    Deployment directory: $(pwd)"
 docker compose "${COMPOSE_ARGS[@]}" ps
 
-# A running stack is not a working product. Nothing that needs an outside
-# account — email, AI — can be configured by this script, and a deployer with no
-# idea that those steps exist reads "Done" as "finished". The admin console shows
-# the same list as a checklist that ticks itself off; this is the version you get
+# A running stack is not a working product. Everything this script can do is
+# already done — plans, chatbot access, model grants, currency, the FenLLM
+# trial account — and the list below says so, because a deployer with no idea
+# what remains reads "Done" as "finished". The admin console shows the same
+# list as a checklist that ticks itself off; this is the version you get
 # before you have logged in.
 cat <<'NEXT'
 
 === Next steps ===
-The stack is up, but it is not usable yet. In the app, as the admin:
+The stack is up and almost everything is already configured. In the app, as
+the admin:
 
   1. Log in at the URL above with the credentials shown earlier.
-  2. Admin > Branding        — set your real business name, contact email and
-                               logo. A deployment left on the auto-generated
-                               name with no logo is more likely to be flagged by
-                               the host as a phishing site.
-  3. Admin > Email / SMTP    — outgoing email. Until this is set, activation and
-                               password-reset emails cannot be delivered at all.
-  4. Admin > AI / LLM        — a free FenLLM trial account has been created for
-                               you automatically and is selected by default; add
-                               OpenAI/Anthropic/Google keys only if you want them.
-  5. Admin > Plans           — switch the AI chatbot feature on for a plan. The
-                               FenLLM model is already granted to every plan, so
-                               there is no model access to set up unless you add
-                               another provider's models.
-  6. Admin > Settings        — currency and timezone.
-  7. Admin > Customers       — add your first customer (invite by email or give a temporary password).
-  8. Link Account            — pair a WhatsApp number by scanning a QR code.
-  9. Chatbot                 — knowledge base, model, then switch the bot on.
+  2. Admin > Email / SMTP    — the one thing this script cannot do: outgoing
+                               email needs your own mailbox (Gmail app password,
+                               Hostinger mail, Brevo…). Until it is set,
+                               customer invitations and password resets cannot
+                               be delivered. Everything else already works.
+  3. Admin > Branding        — upload your logo and check the business name. (A
+                               deployment left with no logo is more likely to be
+                               flagged by hosts as phishing.)
+  4. Admin > Customers       — add your first customer, or test as yourself:
+                               Link Account → scan the QR → Chatbot → switch it
+                               on.
+
+Already configured for you:
+  - Plan ladder: Free / Starter Rs 3,999 / Business Rs 7,999 / Pro Rs 14,999 a
+    month, with AI credits of 100 / 10,000 / 25,000 / 50,000 (edit in
+    Admin > Plans).
+  - The AI chatbot is on for every plan, with a free FenLLM trial account
+    provisioned automatically.
+  - Model access per plan: FenLLM Basic on Free & Starter, Pro on Business,
+    Max on Pro.
+  - Currency PKR and timezone Asia/Karachi (Admin > Settings).
 
 Also worth knowing:
   - DNS for the host above must already point at this server, and a Traefik with

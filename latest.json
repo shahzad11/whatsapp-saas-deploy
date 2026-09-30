@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.1",
-  "published_at": "2026-09-28T09:17:33Z",
-  "notes": "Booking notifications for business owners\n\n- When the WhatsApp assistant books an appointment, the business owner is now told on their own WhatsApp number and by email (if SMTP is set up).\n- New setting under Settings > Appointments: choose WhatsApp and email, one of them, or off.\n- Failed notices appear on the Appointments page with a \"Try again\" button."
+  "version": "v1.0.2",
+  "published_at": "2026-09-30T07:59:12Z",
+  "notes": "Anti-phishing rebrand of the public pages\n\nHosting providers have been suspending deployments that still ship under the\ndefault name \"WhatsApp SaaS\": a login page under that name, with the WhatsApp\nlogo, looks like a phishing site to their scanners.\n\nThis update renames your app automatically, based on your own domain, and adds\nyour business name and contact email to the bottom of the sign-in page.\n\nPlease open Admin > Branding and set your real business name, contact email and\nlogo. A deployment left unbranded is the one most likely to be suspended."
 }

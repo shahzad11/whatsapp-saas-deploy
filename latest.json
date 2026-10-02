@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.10",
-  "published_at": "2026-10-02T08:32:23Z",
-  "notes": "Randomize reply delay: new switch on Bot settings > Behaviour. When on, each reply waits a random time between 5 seconds and the chosen delay instead of the full delay every time. Off by default; existing settings are unchanged."
+  "version": "v1.0.11",
+  "published_at": "2026-10-02T09:25:38Z",
+  "notes": "Simpler Email / SMTP page: one Security preset instead of port + encryption, username defaults to the From address, From name follows the brand name, and a single Save & send test that shows the server conversation on failure. Existing SMTP settings are unchanged."
 }

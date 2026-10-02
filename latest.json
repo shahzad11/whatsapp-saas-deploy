@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.9",
-  "published_at": "2026-09-30T12:20:27Z",
-  "notes": "Ready-to-sell plans out of the box, and AI credits\n\n- New plan ladder: Free, Starter Rs 3,999, Business Rs 7,999, Pro Rs 14,999 - the AI chatbot is on for every plan. Existing plans are not changed; a Business plan is added.\n- AI usage is now metered in credits: 1 per FenLLM Basic reply, 15 per Pro, 35 per Max, +5 for a voice note. The AI credits / month limit on a plan bounds what a customer can cost you whichever model they pick.\n- New installs come up with currency, timezone and default plan set - only outgoing email is left to configure.\n- New Plan Building Guide explains how to price plan"
+  "version": "v1.0.10",
+  "published_at": "2026-10-02T08:32:23Z",
+  "notes": "Randomize reply delay: new switch on Bot settings > Behaviour. When on, each reply waits a random time between 5 seconds and the chosen delay instead of the full delay every time. Off by default; existing settings are unchanged."
 }

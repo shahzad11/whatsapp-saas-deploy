@@ -1,5 +1,5 @@
 {
-  "version": "v1.0.11",
-  "published_at": "2026-10-02T09:25:38Z",
-  "notes": "Simpler Email / SMTP page: one Security preset instead of port + encryption, username defaults to the From address, From name follows the brand name, and a single Save & send test that shows the server conversation on failure. Existing SMTP settings are unchanged."
+  "version": "v1.0.12",
+  "published_at": "2026-10-07T12:10:20Z",
+  "notes": "Voice notes now work with Google Gemini\n\n- Pick any Gemini model (e.g. Gemini 2.5 Flash) as the transcription model under Admin > AI > Instance toggles; voice notes are transcribed by Google and answered by whichever chat model each customer uses.\n- New \"Test transcription\" button next to \"Save AI settings\" sends a short spoken clip through your chosen model and shows the result or the exact error.\n- The admin page now says which providers can transcribe (OpenAI, FenLLM Pro/Max, Gemini) and refuses to save a model that cannot; Claude is text-only because Anthropic's API accepts no audio.\n- The"
 }

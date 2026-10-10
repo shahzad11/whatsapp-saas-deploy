@@ -1,5 +1,5 @@
 {
-  "version": "v1.1.0",
-  "published_at": "2026-10-10T09:54:29Z",
-  "notes": "v1.1.0 - demo end dates, customer statements, update emails, quarterly plans\n\nNew in this update:\n- Demo accounts: when creating a customer or changing their plan you can set an \"Access ends on\" date. The account is suspended automatically after that day and the customer is emailed.\n- Customer statements: a \"Send bill\" button on each customer, an \"Email me this month's bill\" button for customers, and an optional automatic monthly statement (Admin > Settings > Billing).\n- Update alerts: administrators receive an email when a new version is published (switch on Admin > System).\n- Plans: a \"Quart"
+  "version": "v1.1.1",
+  "published_at": "2026-10-10T14:20:41Z",
+  "notes": "Customers table redesign\n\nThe admin Customers page has a cleaner table: customer avatars, the plan shown\nas a card that opens a Change plan dialog, clear status pills, icon buttons\nfor the row actions, and pages of 25 customers."
 }

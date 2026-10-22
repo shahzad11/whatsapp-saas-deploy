@@ -1,5 +1,5 @@
 {
-  "version": "v1.2.0",
-  "published_at": "2026-10-22T05:56:02Z",
-  "notes": "Food menu & WhatsApp ordering (new plan feature, off by default)\n\n- Food menu page with categories, photos and prices; shown as WhatsApp catalogue cards\n- AI chatbot takes delivery/pickup orders, keeps a per-chat cart, quotes fees, ETA and opening hours\n- Orders page with KPIs, status tabs, search, quick actions and printable receipt\n- Customers can reorder; bot knows their order history and saved address\n- Booking numbers for appointments; order payment status\n- Kitchen/staff commands and handover alerts on new orders\n\nEnable it per plan under Admin > Plans, or per tenant from Admin > Custome"
+  "version": "v1.2.1",
+  "published_at": "2026-10-22T08:20:09Z",
+  "notes": "Fix: saving a food-menu item with a photo no longer fails with a 500"
 }

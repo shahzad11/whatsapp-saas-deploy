@@ -1,5 +1,5 @@
 {
-  "version": "v1.2.2",
-  "published_at": "2026-10-23T04:25:58Z",
-  "notes": "v1.2.2 — one conversation per contact, faster photo loading, default favicon\n\n- A customer's chat no longer splits into two threads: messages your bot or\n  team send by phone number (order confirmations, handover alerts, reminders)\n  now appear in the same conversation as the customer's replies. Existing\n  duplicate threads are merged automatically on update, and the duplicate\n  contact stops counting against your plan.\n- Opening a chat with many photos no longer hits the rate limit, so images\n  load instead of showing a \"Photo\" placeholder.\n- Pages show a default icon in the browser tab unt"
+  "version": "v1.2.3",
+  "published_at": "2026-10-23T05:33:50Z",
+  "notes": "v1.2.3: branded order receipt image (tenant business name, new layout)"
 }

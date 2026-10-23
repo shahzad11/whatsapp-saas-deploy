@@ -1,5 +1,5 @@
 {
-  "version": "v1.2.3",
-  "published_at": "2026-10-23T05:33:50Z",
-  "notes": "v1.2.3: branded order receipt image (tenant business name, new layout)"
+  "version": "v1.2.4",
+  "published_at": "2026-10-23T06:17:59Z",
+  "notes": "v1.2.4: receipt footer with business address and bot WhatsApp number"
 }

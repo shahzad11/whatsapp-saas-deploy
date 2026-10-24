@@ -1,5 +1,5 @@
 {
-  "version": "v1.4.1",
-  "published_at": "2026-10-24T19:59:37Z",
-  "notes": "v1.4.1 - Hotfix for v1.4.0\n\nv1.4.0 could not start: the new tenant_files table used a reserved column name. Renamed; the dine-in enum migration guard was also inverted and is fixed. Everything from the v1.4.0 notes applies."
+  "version": "v1.4.2",
+  "published_at": "2026-10-24T23:21:51Z",
+  "notes": "Bot settings is easier to read: help is behind ? icons again, settings are grouped into sections, performance stats open from a Performance button, and services display properly on phones."
 }

@@ -1,5 +1,5 @@
 {
-  "version": "v1.2.4",
-  "published_at": "2026-10-23T06:17:59Z",
-  "notes": "v1.2.4: receipt footer with business address and bot WhatsApp number"
+  "version": "v1.3.0",
+  "published_at": "2026-10-24T11:48:15Z",
+  "notes": "v1.3.0 — UI improvement pass\n\nClearer dates everywhere (22 Oct 2026, 8:16 PM), real plurals, formatted phone numbers. Orders: Open / Completed / Cancelled tabs; cancelled orders show No charge. Food menu first, settings in tabs, instant availability switch. One save bar on settings pages with an unsaved-changes warning. Mobile menu fixed. Chats merge a contact's duplicate threads. Admin audit log in plain sentences. Receipts and other app-sent images are now kept so they keep displaying."
 }

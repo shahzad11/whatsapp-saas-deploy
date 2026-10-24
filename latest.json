@@ -1,5 +1,5 @@
 {
-  "version": "v1.3.1",
-  "published_at": "2026-10-24T12:01:03Z",
-  "notes": "v1.3.1 — fixes a code comment that showed as text in the Appointments table, keeps the Bot settings tabs on one line, and stops dates and amounts wrapping in the Orders table."
+  "version": "v1.4.0",
+  "published_at": "2026-10-24T19:48:32Z",
+  "notes": "v1.4.0 - Student requests batch\n\nChatbot: hands over to a person when it cannot answer (quota, AI error, unreadable attachment); typing indicator while composing; per-tenant reply limit; business information always beats earlier replies; new-tenant reply delay 10 s.\nCredits: charged from the model's real token usage (admin \"Tokens per AI credit\").\nAdmin: delete a plan (customers move to the default plan); delete a customer; per-customer currency; Google Calendar OAuth client.\nFood menu: payment wording per fulfilment, dine-in, coupon codes, \"where alerts go\" card with test alert, renameable se"
 }

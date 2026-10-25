@@ -1,5 +1,5 @@
 {
-  "version": "v1.4.3",
-  "published_at": "2026-10-24T23:29:25Z",
-  "notes": "Bot settings on phones: Performance and Test bot buttons are back, and Help links to the test console open it again."
+  "version": "v1.4.4",
+  "published_at": "2026-10-25T00:40:05Z",
+  "notes": "Cleaner screens across the app: optional explanations sit behind ? icons, admin pages are easier to scan, the phone dashboard and profile are more compact, Help troubleshooting is collapsible, and international phone numbers display correctly."
 }

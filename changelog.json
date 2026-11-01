@@ -1,7 +1,157 @@
 [
   {
     "version": "v1.5.0",
-    "published_at": "2026-11-01T06:06:30Z",
-    "notes": "v1.5.0 — fixes and features from the 30 October class\n\nFixed\n- Branding: logo and favicon uploads now show the Save button and save.\n- Files upload error (500) fixed; duplicate names refused.\n- Knowledge base templates fill in as soon as you pick a business type.\n- Ordering hours can cross midnight (e.g. 22:00–02:00).\n- Handover settings show exactly where alerts go.\n- Pickup-only restaurants: switch delivery off to hide fees and addresses.\n\nNew\n- Admin can turn Appointment booking on/off per customer (next to Food menu).\n- Customers page: filters for payment state, WhatsApp linked, Food m"
+    "published_at": "2026-11-01T11:04:09+05:00",
+    "notes": "v1.5.0 — fixes and features from the 30 October class\n\nFixed\n- Branding: logo and favicon uploads now show the Save button and save.\n- Files upload error (500) fixed; duplicate names refused.\n- Knowledge base templates fill in as soon as you pick a business type.\n- Ordering hours can cross midnight (e.g. 22:00–02:00).\n- Handover settings show exactly where alerts go.\n- Pickup-only restaurants: switch delivery off to hide fees and addresses.\n\nNew\n- Admin can turn Appointment booking on/off per customer (next to Food menu).\n- Customers page: filters for payment state, WhatsApp linked, Food menu,\n  Appointments and last login.\n- Admin → System: full changelog card.\n- Clone a customer into a new account (new email/password); WhatsApp\n  accounts, chats, orders and API keys are never copied.\n- Customers choose their own currency on Profile.\n- Food menu: pick a stored PDF/image flyer the bot sends on request.\n- Models tab: separate voice-note (transcription) model, with own-key option.\n- Services can be deleted (protected while bookings are upcoming).\n- Website: hero image or YouTube/Vimeo video on the landing page.\n- Kitchen print now outputs the same receipt image the customer receives."
+  },
+  {
+    "version": "v1.4.7",
+    "published_at": "2026-10-27T17:20:08+05:00",
+    "notes": "Updated help centres for students and admins, including the Website button settings; clearer appointment notice wording."
+  },
+  {
+    "version": "v1.4.6",
+    "published_at": "2026-10-27T16:17:44+05:00",
+    "notes": "Landing page button can link to a Google Form, external contact page or email (Admin → Website)."
+  },
+  {
+    "version": "v1.4.5",
+    "published_at": "2026-10-26T03:51:14+05:00",
+    "notes": "Source/tag badges now render in WhatsApp green, and stacked content blocks using .mb-3 get breathing room above as well as below."
+  },
+  {
+    "version": "v1.4.4",
+    "published_at": "2026-10-25T05:38:35+05:00",
+    "notes": "Cleaner screens across the app: optional explanations sit behind ? icons, admin pages are easier to scan, the phone dashboard and profile are more compact, Help troubleshooting is collapsible, and international phone numbers display correctly."
+  },
+  {
+    "version": "v1.4.3",
+    "published_at": "2026-10-25T04:28:08+05:00",
+    "notes": "Bot settings on phones: Performance and Test bot buttons are back, and Help links to the test console open it again."
+  },
+  {
+    "version": "v1.4.2",
+    "published_at": "2026-10-25T04:19:54+05:00",
+    "notes": "Bot settings is easier to read: help is behind ? icons again, settings are grouped into sections, performance stats open from a Performance button, and services display properly on phones."
+  },
+  {
+    "version": "v1.4.1",
+    "published_at": "2026-10-25T00:58:08+05:00",
+    "notes": "v1.4.1 - Hotfix for v1.4.0\n\nv1.4.0 could not start: the new tenant_files table used a reserved column name. Renamed; the dine-in enum migration guard was also inverted and is fixed. Everything from the v1.4.0 notes applies."
+  },
+  {
+    "version": "v1.4.0",
+    "published_at": "2026-10-25T00:46:08+05:00",
+    "notes": "v1.4.0 - Student requests batch\n\nChatbot: hands over to a person when it cannot answer (quota, AI error, unreadable attachment); typing indicator while composing; per-tenant reply limit; business information always beats earlier replies; new-tenant reply delay 10 s.\nCredits: charged from the model's real token usage (admin \"Tokens per AI credit\").\nAdmin: delete a plan (customers move to the default plan); delete a customer; per-customer currency; Google Calendar OAuth client.\nFood menu: payment wording per fulfilment, dine-in, coupon codes, \"where alerts go\" card with test alert, renameable section label.\nBot can send uploaded files (images/PDF) and the business location pin.\nKnowledge base templates for 8 business types. Google Calendar sync of bookings."
+  },
+  {
+    "version": "v1.3.1",
+    "published_at": "2026-10-24T16:59:25+05:00",
+    "notes": "v1.3.1 — fixes a code comment that showed as text in the Appointments table, keeps the Bot settings tabs on one line, and stops dates and amounts wrapping in the Orders table."
+  },
+  {
+    "version": "v1.3.0",
+    "published_at": "2026-10-24T16:46:28+05:00",
+    "notes": "v1.3.0 — UI improvement pass\n\nClearer dates everywhere (22 Oct 2026, 8:16 PM), real plurals, formatted phone numbers. Orders: Open / Completed / Cancelled tabs; cancelled orders show No charge. Food menu first, settings in tabs, instant availability switch. One save bar on settings pages with an unsaved-changes warning. Mobile menu fixed. Chats merge a contact's duplicate threads. Admin audit log in plain sentences. Receipts and other app-sent images are now kept so they keep displaying."
+  },
+  {
+    "version": "v1.2.4",
+    "published_at": "2026-10-23T11:16:09+05:00",
+    "notes": "v1.2.4: receipt footer with business address and bot WhatsApp number"
+  },
+  {
+    "version": "v1.2.3",
+    "published_at": "2026-10-23T10:30:22+05:00",
+    "notes": "v1.2.3: branded order receipt image (tenant business name, new layout)"
+  },
+  {
+    "version": "v1.2.2",
+    "published_at": "2026-10-23T09:24:08+05:00",
+    "notes": "v1.2.2 — one conversation per contact, faster photo loading, default favicon\n\n- A customer's chat no longer splits into two threads: messages your bot or\n  team send by phone number (order confirmations, handover alerts, reminders)\n  now appear in the same conversation as the customer's replies. Existing\n  duplicate threads are merged automatically on update, and the duplicate\n  contact stops counting against your plan.\n- Opening a chat with many photos no longer hits the rate limit, so images\n  load instead of showing a \"Photo\" placeholder.\n- Pages show a default icon in the browser tab until you upload your own in\n  Admin → Branding."
+  },
+  {
+    "version": "v1.2.1",
+    "published_at": "2026-10-22T13:18:38+05:00",
+    "notes": "Fix: saving a food-menu item with a photo no longer fails with a 500"
+  },
+  {
+    "version": "v1.2.0",
+    "published_at": "2026-10-19T08:37:38+05:00",
+    "notes": "Food menu & WhatsApp ordering (new plan feature, off by default)\n\n- Food menu page with categories, photos and prices; shown as WhatsApp catalogue cards\n- AI chatbot takes delivery/pickup orders, keeps a per-chat cart, quotes fees, ETA and opening hours\n- Orders page with KPIs, status tabs, search, quick actions and printable receipt\n- Customers can reorder; bot knows their order history and saved address\n- Booking numbers for appointments; order payment status\n- Kitchen/staff commands and handover alerts on new orders\n\nEnable it per plan under Admin > Plans, or per tenant from Admin > Customers."
+  },
+  {
+    "version": "v1.1.1",
+    "published_at": "2026-10-10T19:18:16+05:00",
+    "notes": "Customers table redesign\n\nThe admin Customers page has a cleaner table: customer avatars, the plan shown\nas a card that opens a Change plan dialog, clear status pills, icon buttons\nfor the row actions, and pages of 25 customers."
+  },
+  {
+    "version": "v1.1.0",
+    "published_at": "2026-10-10T14:53:09+05:00",
+    "notes": "v1.1.0 - demo end dates, customer statements, update emails, quarterly plans\n\nNew in this update:\n- Demo accounts: when creating a customer or changing their plan you can set an \"Access ends on\" date. The account is suspended automatically after that day and the customer is emailed.\n- Customer statements: a \"Send bill\" button on each customer, an \"Email me this month's bill\" button for customers, and an optional automatic monthly statement (Admin > Settings > Billing).\n- Update alerts: administrators receive an email when a new version is published (switch on Admin > System).\n- Plans: a \"Quarterly\" billing period, and a \"Show on customers' Billing page\" switch so private or custom plans stay hidden from other customers.\n- Customers list shows \"Customer since\".\n\nFixed:\n- Appointments and handoffs booked through the chatbot now record the phone number for WhatsApp chats that use the newer privacy IDs (@lid).\n- Yearly plans now get a one-year subscription period instead of one month.\n\nNo manual steps: run deploy/update.sh as usual."
+  },
+  {
+    "version": "v1.0.12",
+    "published_at": "2026-10-07T17:07:46+05:00",
+    "notes": "Voice notes now work with Google Gemini\n\n- Pick any Gemini model (e.g. Gemini 2.5 Flash) as the transcription model under Admin > AI > Instance toggles; voice notes are transcribed by Google and answered by whichever chat model each customer uses.\n- New \"Test transcription\" button next to \"Save AI settings\" sends a short spoken clip through your chosen model and shows the result or the exact error.\n- The admin page now says which providers can transcribe (OpenAI, FenLLM Pro/Max, Gemini) and refuses to save a model that cannot; Claude is text-only because Anthropic's API accepts no audio.\n- The last ignored voice note and the reason it was skipped are shown under the transcription model dropdown."
+  },
+  {
+    "version": "v1.0.11",
+    "published_at": "2026-10-02T14:24:16+05:00",
+    "notes": "Simpler Email / SMTP page: one Security preset instead of port + encryption, username defaults to the From address, From name follows the brand name, and a single Save & send test that shows the server conversation on failure. Existing SMTP settings are unchanged."
+  },
+  {
+    "version": "v1.0.10",
+    "published_at": "2026-10-02T13:30:44+05:00",
+    "notes": "Randomize reply delay: new switch on Bot settings > Behaviour. When on, each reply waits a random time between 5 seconds and the chosen delay instead of the full delay every time. Off by default; existing settings are unchanged."
+  },
+  {
+    "version": "v1.0.9",
+    "published_at": "2026-09-30T17:17:20+05:00",
+    "notes": "Ready-to-sell plans out of the box, and AI credits\n\n- New plan ladder: Free, Starter Rs 3,999, Business Rs 7,999, Pro Rs 14,999 - the AI chatbot is on for every plan. Existing plans are not changed; a Business plan is added.\n- AI usage is now metered in credits: 1 per FenLLM Basic reply, 15 per Pro, 35 per Max, +5 for a voice note. The AI credits / month limit on a plan bounds what a customer can cost you whichever model they pick.\n- New installs come up with currency, timezone and default plan set - only outgoing email is left to configure.\n- New Plan Building Guide explains how to price plans profitably."
+  },
+  {
+    "version": "v1.0.8",
+    "published_at": "2026-09-30T15:42:35+05:00",
+    "notes": "v1.0.8: redesigned public website\n\nYour public landing page has a new design: a clear \"Request access\" call to action, six feature cards, how it works, a short summary of how messages are handled, questions people ask, and a \"Who runs this workspace?\" block with your business name and contact email.\n\nNew in Admin -> Branding: optional business address, phone and registration number. They appear on the public pages only when you fill them in, and a verifiable operator identity is what abuse reviewers look for.\n\nAdmin -> Website: feature cards are now \"Title | Description\" per line (blank restores the defaults). If you previously saved custom features, they still show as title-only cards until you add descriptions.\n\nUpdate with the usual one-liner. Nothing changes inside the app or on the sign-in page."
+  },
+  {
+    "version": "v1.0.7",
+    "published_at": "2026-09-30T15:39:41+05:00",
+    "notes": "Voice notes work again: transcription no longer waits on the model's reasoning, and a transcript that arrives partially is still used instead of being dropped."
+  },
+  {
+    "version": "v1.0.6",
+    "published_at": "2026-09-30T15:00:51+05:00",
+    "notes": "Handover fixes: the assistant now always tells the customer when a person takes over, an offer no longer opens a handover before the customer accepts, and the Chats page shows which conversations are with a person with a per-chat Bot on/off switch."
+  },
+  {
+    "version": "v1.0.5",
+    "published_at": "2026-09-30T14:25:14+05:00",
+    "notes": "Neutral sign-in branding and a fuller public page\n\nYour sign-in pages no longer use the WhatsApp logo or WhatsApp green. The mark\nis now a monogram from your business name, and an uploaded logo still replaces\nit. Brand impersonation is what gets deployments suspended, so this matters.\n\nThe public page gains \"How it works\" and a FAQ that answers why there is no\nsign-up button -- the question that makes a login-only site look suspicious.\n\nAdmin > Website now takes screenshots and can publish your plans."
+  },
+  {
+    "version": "v1.0.4",
+    "published_at": "2026-09-30T13:43:21+05:00",
+    "notes": "Landing page copy fix\n\nFixes the automatic landing-page headline, which could come out as just your\nbusiness name with the descriptive part missing. The built-in text is now kept\nwhenever the generated version adds nothing to it.\n\nEdit your landing page, privacy and terms text in Admin > Website."
+  },
+  {
+    "version": "v1.0.3",
+    "published_at": "2026-09-30T13:37:22+05:00",
+    "notes": "Public website, privacy and terms pages\n\nYour app now has a real public website at its address, instead of going straight\nto the sign-in form. A domain whose only page is a login box is what hosting\nproviders flag as a phishing site.\n\nIt adds a landing page, privacy, terms and contact pages, and states clearly\nthat accounts are created by you and there is no public sign-up.\n\nEdit all of it in Admin > Website. Please replace the privacy and terms text --\nit is a general template and has not been reviewed by a lawyer."
+  },
+  {
+    "version": "v1.0.2",
+    "published_at": "2026-09-30T12:57:41+05:00",
+    "notes": "Anti-phishing rebrand of the public pages\n\nHosting providers have been suspending deployments that still ship under the\ndefault name \"WhatsApp SaaS\": a login page under that name, with the WhatsApp\nlogo, looks like a phishing site to their scanners.\n\nThis update renames your app automatically, based on your own domain, and adds\nyour business name and contact email to the bottom of the sign-in page.\n\nPlease open Admin > Branding and set your real business name, contact email and\nlogo. A deployment left unbranded is the one most likely to be suspended."
+  },
+  {
+    "version": "v1.0.1",
+    "published_at": "2026-09-28T14:15:50+05:00",
+    "notes": "Booking notifications for business owners\n\n- When the WhatsApp assistant books an appointment, the business owner is now told on their own WhatsApp number and by email (if SMTP is set up).\n- New setting under Settings > Appointments: choose WhatsApp and email, one of them, or off.\n- Failed notices appear on the Appointments page with a \"Try again\" button."
+  },
+  {
+    "version": "v1.0.0",
+    "published_at": "2026-09-28T13:51:59+05:00",
+    "notes": "First tagged release.\n\n- Stable release channel for student deployments\n- deploy/update.sh: backup-first updates with rollback\n- Admin console shows the running version and available updates"
   }
 ]

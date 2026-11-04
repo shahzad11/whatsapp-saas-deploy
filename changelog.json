@@ -1,5 +1,10 @@
 [
   {
+    "version": "v1.5.1",
+    "published_at": "2026-11-04T06:33:30Z",
+    "notes": "v1.5.1: voice-note controls on the Model tab"
+  },
+  {
     "version": "v1.5.0",
     "published_at": "2026-11-01T11:04:09+05:00",
     "notes": "v1.5.0 — fixes and features from the 30 October class\n\nFixed\n- Branding: logo and favicon uploads now show the Save button and save.\n- Files upload error (500) fixed; duplicate names refused.\n- Knowledge base templates fill in as soon as you pick a business type.\n- Ordering hours can cross midnight (e.g. 22:00–02:00).\n- Handover settings show exactly where alerts go.\n- Pickup-only restaurants: switch delivery off to hide fees and addresses.\n\nNew\n- Admin can turn Appointment booking on/off per customer (next to Food menu).\n- Customers page: filters for payment state, WhatsApp linked, Food menu,\n  Appointments and last login.\n- Admin → System: full changelog card.\n- Clone a customer into a new account (new email/password); WhatsApp\n  accounts, chats, orders and API keys are never copied.\n- Customers choose their own currency on Profile.\n- Food menu: pick a stored PDF/image flyer the bot sends on request.\n- Models tab: separate voice-note (transcription) model, with own-key option.\n- Services can be deleted (protected while bookings are upcoming).\n- Website: hero image or YouTube/Vimeo video on the landing page.\n- Kitchen print now outputs the same receipt image the customer receives."

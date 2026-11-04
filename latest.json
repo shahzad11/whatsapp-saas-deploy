@@ -1,5 +1,5 @@
 {
-  "version": "v1.5.0",
-  "published_at": "2026-11-01T06:06:29Z",
-  "notes": "v1.5.0 — fixes and features from the 30 October class\n\nFixed\n- Branding: logo and favicon uploads now show the Save button and save.\n- Files upload error (500) fixed; duplicate names refused.\n- Knowledge base templates fill in as soon as you pick a business type.\n- Ordering hours can cross midnight (e.g. 22:00–02:00).\n- Handover settings show exactly where alerts go.\n- Pickup-only restaurants: switch delivery off to hide fees and addresses.\n\nNew\n- Admin can turn Appointment booking on/off per customer (next to Food menu).\n- Customers page: filters for payment state, WhatsApp linked, Food m"
+  "version": "v1.5.1",
+  "published_at": "2026-11-04T06:33:29Z",
+  "notes": "v1.5.1: voice-note controls on the Model tab"
 }

@@ -1,5 +1,5 @@
 {
-  "version": "v1.5.1",
-  "published_at": "2026-11-04T06:33:29Z",
-  "notes": "v1.5.1: voice-note controls on the Model tab"
+  "version": "v1.5.2",
+  "published_at": "2026-11-07T10:29:21Z",
+  "notes": "Fixes from the 6 Nov webinar feedback\n\n- Admin settings: Save works again (the Google Calendar card no longer breaks the form), and saving Google Calendar credentials no longer crashes the page.\n- Google Calendar: tenants can now connect and disconnect their own calendar from Bot settings > Appointments.\n- Voice notes: the model dropdown now lists every model your plan allows (FenLLM Pro/Max included).\n- Orders: changing an order that is still New or Confirmed edits it in place - same order number, kitchen gets a CHANGED alert - instead of cancelling and re-ordering.\n- Bookings: the bot is giv"
 }

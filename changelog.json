@@ -1,5 +1,10 @@
 [
   {
+    "version": "v1.5.3",
+    "published_at": "2026-11-11T09:40:18Z",
+    "notes": "Fixes from student reports, 7-11 Nov\n\n- Google Calendar: Connect now works. It used to fail every time with \"Google did not return a refresh token\". If Google refuses, the page now shows the real reason.\n- Coupons: \"Amount off\" coupons take off the full amount (100 means 100, not 1). IMPORTANT: delete and re-create any amount-off coupon you made before this update. A coupon is valid until the end of its expiry day. The discount stays on the bill through the whole chat, and a wrong code is answered with \"That code is not valid.\"\n- Delivery areas: new setting in Food menu > Ordering settings, \"I"
+  },
+  {
     "version": "v1.5.2",
     "published_at": "2026-11-07T10:29:22Z",
     "notes": "Fixes from the 6 Nov webinar feedback\n\n- Admin settings: Save works again (the Google Calendar card no longer breaks the form), and saving Google Calendar credentials no longer crashes the page.\n- Google Calendar: tenants can now connect and disconnect their own calendar from Bot settings > Appointments.\n- Voice notes: the model dropdown now lists every model your plan allows (FenLLM Pro/Max included).\n- Orders: changing an order that is still New or Confirmed edits it in place - same order number, kitchen gets a CHANGED alert - instead of cancelling and re-ordering.\n- Bookings: the bot is giv"
